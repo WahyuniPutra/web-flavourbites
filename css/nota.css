@@ -1,0 +1,64 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+.nota-container {
+  max-width: 80mm;
+  margin: 0 auto;
+  padding: 10px;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.header h1 {
+  font-size: 18px;
+  margin: 0;
+}
+
+.header p {
+  font-size: 12px;
+  margin: 5px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+  font-size: 12px;
+}
+
+th,
+td {
+  padding: 5px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.total {
+  font-weight: bold;
+  text-align: right;
+  margin-top: 10px;
+  font-size: 14px;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  margin-top: 20px;
+}
+
+@media print {
+  body {
+    padding: 0;
+    margin: 0;
+  }
+
+  .no-print {
+    display: none;
+  }
+}

@@ -34,7 +34,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     }
 
                     $stmt->bind_param("iisi", $order['id_pembelian'], $id_admin, $order['nama_menu'], $order['total_harga']);
-                    
+
                     if (!$stmt->execute()) {
                         throw new Exception('Execute failed: ' . $stmt->error);
                     }
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     if (!$stmt) {
                         throw new Exception('Prepare delete failed: ' . $conn->error);
                     }
-                    
+
                     $stmt->bind_param("i", $order['id_pesanan']);
                     if (!$stmt->execute()) {
                         throw new Exception('Execute delete failed: ' . $stmt->error);
@@ -58,7 +58,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Redirect to print_nota.php
                 header("Location: print_nota.php?id_pembelian=$id_pembelian");
                 exit();
-
             } catch (Exception $e) {
                 // Rollback jika terjadi error
                 $conn->rollback();
@@ -88,74 +87,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch pending orders
-$sql = "SELECT * FROM pesanan ORDER BY id_pembelian";
+$sql = "SELECT p.*, b.nama_pembeli, b.no_telepon 
+        FROM pesanan p 
+        JOIN pembelian b ON p.id_pembelian = b.id_pembelian 
+        ORDER BY p.id_pembelian";
 $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet" href="../css/atmin.css">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Flavour Bites</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
-        header {
-            background-color: #ff1493;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 20px;
-        }
-        table, th, td {
-            border: 1px solid #ddd;
-        }
-        th, td {
-            padding: 10px;
-            text-align: left;
-        }
-        th {
-            background-color: #ff1493;
-            color: white;
-        }
-        .btn {
-            padding: 10px 15px;
-            color: white;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            transition: background-color 0.3s ease;
-        }
-        .btn-approve {
-            background-color: #28a745;
-        }
-        .btn-approve:hover {
-            background-color: #218838;
-        }
-        .btn-reject {
-            background-color: #dc3545;
-        }
-        .btn-reject:hover {
-            background-color: #c82333;
-        }
-    </style>
 </head>
+
 <body>
     <header>
         <h1>Admin Flavour Bites</h1>
@@ -165,7 +112,7 @@ $result = $conn->query($sql);
         <?php
         if ($result->num_rows > 0) {
             $current_id_pembelian = null;
-            while($row = $result->fetch_assoc()) {
+            while ($row = $result->fetch_assoc()) {
                 if ($current_id_pembelian !== $row['id_pembelian']) {
                     if ($current_id_pembelian !== null) {
                         echo "</tbody></table>
@@ -177,6 +124,8 @@ $result = $conn->query($sql);
                     }
                     $current_id_pembelian = $row['id_pembelian'];
                     echo "<h3>ID Pembelian: " . htmlspecialchars($current_id_pembelian) . "</h3>";
+                    echo "<p>Nama Pembeli: " . htmlspecialchars($row['nama_pembeli']) . "</p>";
+                    echo "<p>No Telepon: " . htmlspecialchars($row['no_telepon']) . "</p>";
                     echo "<table>
                             <thead>
                                 <tr>
@@ -207,4 +156,5 @@ $result = $conn->query($sql);
         ?>
     </div>
 </body>
+
 </html>
